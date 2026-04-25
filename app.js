@@ -57,6 +57,7 @@ const dom = {
   exportSectionInfo: document.getElementById('exportSectionInfo'),
   exportBtn: document.getElementById('stickyExportBtn'),
   exportReadinessHint: document.getElementById('exportReadinessHint'),
+  stickyActionBar: document.getElementById('stickyActionBar'),
   stickyRowsCount: document.getElementById('stickyRowsCount'),
   stickySelectedCount: document.getElementById('stickySelectedCount'),
   clearWorkspaceBtn: document.getElementById('clearWorkspaceBtn'),
@@ -83,6 +84,7 @@ async function init() {
   registerServiceWorker();
   setupInstallPrompt();
   await loadAllData();
+  updateStepLayout();
 }
 
 function bindEvents() {
@@ -881,7 +883,9 @@ async function parseWorkbookBuffer(buffer) {
 function openSection(section) {
   state.openSection = section;
   updateAccordionState();
+  updateStepLayout();
   updateProgressStatus(buildExportRows().length);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function goToPreviousSection() {
@@ -895,6 +899,12 @@ function updateAccordionState() {
   dom.sectionCards.forEach(card => {
     card.classList.toggle('active', card.dataset.section === state.openSection);
   });
+}
+
+function updateStepLayout() {
+  const inWorkspace = state.openSection === 'workspace';
+  dom.stickyActionBar.classList.toggle('hidden-step', !inWorkspace);
+  document.body.classList.toggle('workspace-step-active', inWorkspace);
 }
 
 function registerServiceWorker() {
