@@ -65,8 +65,7 @@ input, select { -webkit-appearance: none; appearance: none; }
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
+  padding: 6px 9px;
 }
 
 .topbar-title {
@@ -92,16 +91,22 @@ input, select { -webkit-appearance: none; appearance: none; }
 }
 
 .topbar-actions { justify-content: flex-end; }
-.wizard { display: grid; gap: 8px; }
+.wizard {
+  display: grid;
+  gap: 8px;
+}
 .section-card { overflow: hidden; }
 
 .ux-status-card {
   background: var(--panel-soft);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 9px 11px;
+  padding: 7px 10px;
   display: grid;
   gap: 4px;
+  position: sticky;
+  top: 6px;
+  z-index: 30;
 }
 
 .ux-status-top {
@@ -109,6 +114,26 @@ input, select { -webkit-appearance: none; appearance: none; }
   justify-content: space-between;
   gap: 8px;
   align-items: center;
+}
+
+.progress-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.progress-left strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-back-btn {
+  min-height: 28px;
+  border-radius: 10px;
+  padding: 0 9px;
+  white-space: nowrap;
 }
 
 .export-hint {
@@ -155,7 +180,17 @@ input, select { -webkit-appearance: none; appearance: none; }
   padding: 0 8px 8px;
 }
 
+.section-card {
+  display: none;
+  border-radius: var(--radius-lg);
+}
+
+.section-card.active {
+  display: block;
+}
+
 .section-card.active .section-body { display: block; }
+.section-toggle { display: none; }
 
 .toolbar,
 .field-grid,

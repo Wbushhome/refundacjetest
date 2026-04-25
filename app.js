@@ -32,6 +32,7 @@ const dom = {
   progressHeadline: document.getElementById('progressHeadline'),
   progressPercent: document.getElementById('progressPercent'),
   progressHint: document.getElementById('progressHint'),
+  progressBackBtn: document.getElementById('progressBackBtn'),
   clientSearch: document.getElementById('clientSearch'),
   clientList: document.getElementById('clientList'),
   clientResultsInfo: document.getElementById('clientResultsInfo'),
@@ -167,6 +168,7 @@ function bindEvents() {
   dom.installBtn.addEventListener('click', installApp);
   dom.goProductsBtn.addEventListener('click', () => openSection('products'));
   dom.goWorkspaceBtn.addEventListener('click', () => openSection('workspace'));
+  dom.progressBackBtn.addEventListener('click', goToPreviousSection);
 
   dom.sectionButtons.forEach(button => {
     button.addEventListener('click', () => openSection(button.dataset.open));
@@ -882,6 +884,13 @@ function openSection(section) {
   updateProgressStatus(buildExportRows().length);
 }
 
+function goToPreviousSection() {
+  const sectionOrder = ['clients', 'products', 'workspace'];
+  const currentIndex = sectionOrder.indexOf(state.openSection);
+  if (currentIndex <= 0) return;
+  openSection(sectionOrder[currentIndex - 1]);
+}
+
 function updateAccordionState() {
   dom.sectionCards.forEach(card => {
     card.classList.toggle('active', card.dataset.section === state.openSection);
@@ -943,6 +952,16 @@ function showToast(message) {
 }
 
 function updateProgressStatus(exportRowsCount = 0) {
+  const sectionOrder = ['clients', 'products', 'workspace'];
+  const currentIndex = sectionOrder.indexOf(state.openSection);
+  const canGoBack = currentIndex > 0;
+  const previousLabel = canGoBack
+    ? (sectionOrder[currentIndex - 1] === 'clients' ? 'Kontrahenci' : 'Indeksy')
+    : '';
+  dom.progressBackBtn.disabled = !canGoBack;
+  dom.progressBackBtn.classList.toggle('hidden', !canGoBack);
+  dom.progressBackBtn.textContent = canGoBack ? `← ${previousLabel}` : '← Wstecz';
+
   const hasClients = state.selectedClients.size > 0;
   const hasProducts = state.workspaceItems.size > 0;
   const hasDates = Boolean(state.globalDates.from && state.globalDates.to && state.globalDates.from <= state.globalDates.to);
