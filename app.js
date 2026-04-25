@@ -439,7 +439,7 @@ function renderSelectedClients() {
   dom.selectedClientsChips.innerHTML = '';
 
   if (!items.length) {
-    dom.selectedClientsChips.innerHTML = '<div class="empty-state">Nie wybrano jeszcze żadnego kontrahenta.</div>';
+    dom.selectedClientsChips.innerHTML = '';
     dom.clientSectionInfo.textContent = 'Szukaj po numerze, logo lub nazwie';
     return;
   }

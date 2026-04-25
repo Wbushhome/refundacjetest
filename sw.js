@@ -1,4 +1,4 @@
-const CACHE_NAME = 'refundacje-pwa-v13';
+const CACHE_NAME = 'refundacje-pwa-v14';
 const CORE_ASSETS = [
   './',
   './index.html',

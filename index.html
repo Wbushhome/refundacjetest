@@ -20,41 +20,74 @@
 </head>
 <body data-active-step="clients">
   <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar-title">Refundacje</div>
-      <div class="topbar-actions">
-        <button id="installBtn" class="secondary-btn micro-btn hidden" type="button">Zainstaluj</button>
-        <button id="reloadBtn" class="ghost-btn micro-btn" type="button">Odśwież</button>
-      </div>
+
+    <!-- ================ TOPBAR (slim, pinned to very top) ================ -->
+    <header class="topbar" role="banner">
+      <span class="topbar-mark" aria-hidden="true"></span>
+      <span class="topbar-title-text">Refundacje</span>
+      <span class="topbar-spacer"></span>
+      <button id="installBtn" class="icon-btn hidden" type="button" aria-label="Zainstaluj aplikację" title="Zainstaluj">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+      </button>
+      <button id="reloadBtn" class="icon-btn" type="button" aria-label="Odśwież dane" title="Odśwież dane">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+          <path d="M8 16H3v5"/>
+        </svg>
+      </button>
     </header>
 
+    <!-- ================ STATUS BAR (mini icon stepper) ================ -->
+    <section class="ux-status-card" aria-live="polite" aria-label="Postęp pracy">
+      <button id="progressBackBtn" class="icon-btn back-btn" type="button" aria-label="Wróć do poprzedniego kroku" title="Wstecz">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="step-track" role="tablist">
+        <button class="step-dot" data-step="1" data-open="clients" type="button" role="tab" aria-label="Krok 1: Kontrahenci" title="Kontrahenci">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </button>
+        <span class="step-line" data-segment="1-2" aria-hidden="true"></span>
+        <button class="step-dot" data-step="2" data-open="products" type="button" role="tab" aria-label="Krok 2: Indeksy" title="Indeksy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+            <path d="m3.3 7 8.7 5 8.7-5"/>
+            <path d="M12 22V12"/>
+          </svg>
+        </button>
+        <span class="step-line" data-segment="2-3" aria-hidden="true"></span>
+        <button class="step-dot" data-step="3" data-open="workspace" type="button" role="tab" aria-label="Krok 3: Refundacje" title="Refundacje">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="20" height="12" x="2" y="6" rx="2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M6 12h.01"/>
+            <path d="M18 12h.01"/>
+          </svg>
+        </button>
+      </div>
+
+      <span id="progressPercent" class="progress-percent">0%</span>
+
+      <!-- Hidden but in DOM: keeps JS happy and helps screen readers -->
+      <strong id="progressHeadline" class="visually-hidden"></strong>
+      <small id="progressHint" class="visually-hidden"></small>
+    </section>
+
+    <!-- ================ MAIN WIZARD CONTENT ================ -->
     <main class="wizard">
-      <section class="ux-status-card" aria-live="polite">
-        <div class="step-indicator" role="list">
-          <div class="step-seg" data-step="1" role="listitem">
-            <span class="step-num">1</span>
-            <span class="step-label">Kontrahenci</span>
-          </div>
-          <div class="step-seg" data-step="2" role="listitem">
-            <span class="step-num">2</span>
-            <span class="step-label">Indeksy</span>
-          </div>
-          <div class="step-seg" data-step="3" role="listitem">
-            <span class="step-num">3</span>
-            <span class="step-label">Refundacje</span>
-          </div>
-        </div>
-
-        <div class="ux-status-top">
-          <div class="progress-left">
-            <button id="progressBackBtn" class="ghost-btn small-btn progress-back-btn" type="button" aria-label="Wróć do poprzedniego kroku">← Wstecz</button>
-            <strong id="progressHeadline">Krok 1 z 3: wybierz kontrahentów</strong>
-          </div>
-          <span id="progressPercent" class="badge">0%</span>
-        </div>
-        <small id="progressHint" class="muted">Wskazówka: wpisz „/”, aby szybko przejść do wyszukiwarki aktywnego kroku.</small>
-      </section>
-
       <section class="panel section-card" data-section="clients">
         <button class="section-toggle" type="button" data-open="clients">
           <span>
@@ -148,6 +181,7 @@
       </section>
     </main>
 
+    <!-- ================ STICKY ACTION BAR (workspace step) ================ -->
     <div id="stickyActionBar" class="sticky-action-bar mac-sticky-bar compact-sticky-bar">
       <div class="sticky-topline compact-topline">
         <div class="sticky-stat-pill">
