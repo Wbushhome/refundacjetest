@@ -2,18 +2,23 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#eef2f7">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+  <meta name="theme-color" content="#f6f4ef">
   <meta name="description" content="Generator refundacji dla kontrahentów i indeksów">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <title>Generator refundacji</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
   <link rel="stylesheet" href="./styles.css">
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="./app.js" defer></script>
 </head>
-<body>
+<body data-active-step="clients">
   <div class="app-shell">
     <header class="topbar">
       <div class="topbar-title">Refundacje</div>
@@ -25,6 +30,21 @@
 
     <main class="wizard">
       <section class="ux-status-card" aria-live="polite">
+        <div class="step-indicator" role="list">
+          <div class="step-seg" data-step="1" role="listitem">
+            <span class="step-num">1</span>
+            <span class="step-label">Kontrahenci</span>
+          </div>
+          <div class="step-seg" data-step="2" role="listitem">
+            <span class="step-num">2</span>
+            <span class="step-label">Indeksy</span>
+          </div>
+          <div class="step-seg" data-step="3" role="listitem">
+            <span class="step-num">3</span>
+            <span class="step-label">Refundacje</span>
+          </div>
+        </div>
+
         <div class="ux-status-top">
           <div class="progress-left">
             <button id="progressBackBtn" class="ghost-btn small-btn progress-back-btn" type="button" aria-label="Wróć do poprzedniego kroku">← Wstecz</button>
@@ -45,7 +65,7 @@
         </button>
         <div class="section-body" id="clientsBody">
           <div class="toolbar compact-toolbar">
-            <input id="clientSearch" class="search-input" type="search" placeholder="Wpisz fragment numeru, logo lub nazwy">
+            <input id="clientSearch" class="search-input" type="search" placeholder="Numer, logo lub nazwa kontrahenta">
             <div class="button-row two-actions compact-actions">
               <button id="selectVisibleClientsBtn" class="secondary-btn small-btn" type="button">Zaznacz widoczne</button>
               <button id="clearClientsBtn" class="ghost-btn small-btn" type="button">Wyczyść</button>
@@ -54,7 +74,7 @@
 
           <div class="subheader-row">
             <span id="clientResultsInfo" class="muted">0 wyników</span>
-            <button id="goProductsBtn" class="link-btn bordered-link small-btn" type="button">Dalej</button>
+            <button id="goProductsBtn" class="link-btn bordered-link small-btn" type="button">Dalej →</button>
           </div>
 
           <div id="selectedClientsChips" class="chips"></div>
@@ -72,10 +92,10 @@
         </button>
         <div class="section-body" id="productsBody">
           <div class="toolbar compact-toolbar">
-            <input id="productSearch" class="search-input" type="search" placeholder="Szukaj: producent, nazwa, ID towaru, kod kreskowy (kolejność dowolna)">
+            <input id="productSearch" class="search-input" type="search" placeholder="Producent, nazwa, ID, EAN — kolejność dowolna">
             <div class="button-row two-actions compact-actions">
               <button id="addVisibleProductsBtn" class="secondary-btn small-btn" type="button">Dodaj widoczne</button>
-              <button id="goWorkspaceBtn" class="link-btn bordered-link small-btn" type="button">Refundacje</button>
+              <button id="goWorkspaceBtn" class="link-btn bordered-link small-btn" type="button">Refundacje →</button>
             </div>
           </div>
 

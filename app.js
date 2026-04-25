@@ -905,6 +905,7 @@ function updateStepLayout() {
   const inWorkspace = state.openSection === 'workspace';
   dom.stickyActionBar.classList.toggle('hidden-step', !inWorkspace);
   document.body.classList.toggle('workspace-step-active', inWorkspace);
+  document.body.setAttribute('data-active-step', state.openSection);
 }
 
 function registerServiceWorker() {
