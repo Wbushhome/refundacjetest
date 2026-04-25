@@ -192,6 +192,15 @@ input, select { -webkit-appearance: none; appearance: none; }
   min-height: 0;
 }
 
+.section-card {
+  display: none;
+  border-radius: var(--radius-lg);
+}
+
+.section-card.active {
+  display: block;
+}
+
 .section-card.active .section-body { display: block; }
 .section-toggle { display: none; }
 
