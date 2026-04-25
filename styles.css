@@ -40,9 +40,13 @@ button, input, select { font: inherit; }
 input, select { -webkit-appearance: none; appearance: none; }
 
 .app-shell {
-  max-width: 860px;
+  max-width: min(1200px, 100vw);
   margin: 0 auto;
-  padding: 8px 8px calc(98px + env(safe-area-inset-bottom));
+  padding: 6px 6px calc(98px + env(safe-area-inset-bottom));
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 6px;
 }
 
 .topbar,
@@ -60,13 +64,7 @@ input, select { -webkit-appearance: none; appearance: none; }
   border-radius: var(--radius-xl);
 }
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 9px;
-}
+.topbar { display: none; }
 
 .topbar-title {
   font-size: 14px;
@@ -94,6 +92,8 @@ input, select { -webkit-appearance: none; appearance: none; }
 .wizard {
   display: grid;
   gap: 8px;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
 }
 .section-card { overflow: hidden; }
 
@@ -177,7 +177,19 @@ input, select { -webkit-appearance: none; appearance: none; }
 
 .section-body {
   display: none;
-  padding: 0 8px 8px;
+  padding: 0 6px 8px;
+  height: 100%;
+  overflow: auto;
+}
+
+.section-card {
+  display: none;
+  border-radius: var(--radius-lg);
+}
+
+.section-card.active {
+  display: block;
+  min-height: 0;
 }
 
 .section-card {
@@ -668,9 +680,9 @@ input, select { -webkit-appearance: none; appearance: none; }
 
 @media (min-width: 721px) {
   .app-shell {
-    padding: 12px 12px calc(98px + env(safe-area-inset-bottom));
+    padding: 10px 10px calc(98px + env(safe-area-inset-bottom));
   }
 
-  .section-body { padding: 0 10px 10px; }
+  .section-body { padding: 0 8px 10px; }
   .wizard { gap: 10px; }
 }
