@@ -127,23 +127,26 @@ body::before {
   z-index: 1;
   max-width: min(1180px, 100vw);
   margin: 0 auto;
-  padding: var(--s-3);
+  padding: max(4px, env(safe-area-inset-top)) var(--s-3) var(--s-3);
   min-height: 100svh;
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: var(--s-3);
+  gap: var(--s-2);
 }
 
 /* ---------- Top bar (kept compact) ---------- */
 .topbar {
+  position: sticky;
+  top: env(safe-area-inset-top);
+  z-index: 45;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s-3);
-  padding: var(--s-2) var(--s-4);
+  gap: var(--s-2);
+  padding: 6px var(--s-3);
   background: var(--surface-card);
   border: 1px solid var(--line-1);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   box-shadow: var(--shadow-2);
 }
 
@@ -152,14 +155,14 @@ body::before {
   align-items: center;
   gap: var(--s-2);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: -0.015em;
 }
 
 .topbar-title::before {
   content: "";
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: 7px;
   background:
     linear-gradient(135deg, var(--brand-500) 0%, var(--brand-600) 100%);
@@ -176,7 +179,7 @@ body::before {
 /* ---------- Wizard layout ---------- */
 .wizard {
   display: grid;
-  gap: var(--s-3);
+  gap: var(--s-2);
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
 }
@@ -184,14 +187,14 @@ body::before {
 /* ---------- Status / progress card ---------- */
 .ux-status-card {
   position: sticky;
-  top: var(--s-3);
+  top: calc(env(safe-area-inset-top) + 46px);
   z-index: 30;
   display: grid;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-4);
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
   background: var(--surface-card);
   border: 1px solid var(--line-1);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   box-shadow: var(--shadow-2);
   overflow: hidden;
 }
@@ -200,7 +203,7 @@ body::before {
 .step-indicator {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--s-2);
+  gap: 6px;
 }
 
 .step-seg {
@@ -209,7 +212,7 @@ body::before {
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: var(--s-2);
-  padding: 7px var(--s-3);
+  padding: 5px var(--s-2);
   border-radius: var(--r-md);
   background: var(--surface-sunken);
   border: 1px solid var(--line-1);
@@ -223,13 +226,13 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: var(--r-pill);
   background: var(--surface-card);
   border: 1px solid var(--line-2);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--ink-500);
   flex-shrink: 0;
@@ -237,7 +240,7 @@ body::before {
 }
 
 .step-seg .step-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-500);
   white-space: nowrap;
@@ -318,7 +321,7 @@ body[data-active-step="workspace"] .step-seg[data-step="2"] .step-label {
 }
 
 .progress-left strong {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--ink-900);
@@ -331,9 +334,9 @@ body[data-active-step="workspace"] .step-seg[data-step="2"] .step-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 30px;
+  height: 28px;
   padding: 0 var(--s-3);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-700);
   background: var(--surface-sunken);
@@ -356,11 +359,11 @@ body[data-active-step="workspace"] .step-seg[data-step="2"] .step-label {
 #progressPercent.badge {
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.02em;
   background: var(--ink-900);
   color: #fff;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--r-pill);
   min-width: 48px;
   display: inline-flex;
@@ -369,7 +372,7 @@ body[data-active-step="workspace"] .step-seg[data-step="2"] .step-label {
 }
 
 #progressHint {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink-500);
   display: block;
   margin: 0;
@@ -407,8 +410,8 @@ body[data-active-step="workspace"] .step-seg[data-step="2"] .step-label {
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  padding: var(--s-4);
-  gap: var(--s-3);
+  padding: var(--s-3);
+  gap: var(--s-2);
 }
 
 /* ---------- Toolbar (search + actions) ---------- */
@@ -683,10 +686,19 @@ input[type="date"].search-input {
   gap: var(--s-2);
   flex-wrap: nowrap;
   overflow-x: auto;
-  padding: 2px 2px var(--s-2);
+  padding: 2px;
   margin: 0 -2px;
+  max-height: 38px;
   scrollbar-width: thin;
   scrollbar-color: var(--line-2) transparent;
+}
+
+.chips .empty-state {
+  min-height: 0;
+  padding: 6px var(--s-2);
+  font-size: 11px;
+  border-style: solid;
+  white-space: nowrap;
 }
 
 .chips::-webkit-scrollbar { height: 6px; }
@@ -696,12 +708,12 @@ input[type="date"].search-input {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 6px 6px 10px;
+  padding: 4px 6px 4px 9px;
   background: var(--surface-card);
   color: var(--ink-700);
   border: 1px solid var(--line-2);
   border-radius: var(--r-pill);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   flex: 0 0 auto;
   max-width: 320px;
@@ -712,7 +724,7 @@ input[type="date"].search-input {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .selected-chip {
@@ -1349,20 +1361,78 @@ body:not(.workspace-step-active) .toast {
 
 /* ---------- Responsive: tight mobile ---------- */
 @media (max-width: 479px) {
-  .step-seg {
-    grid-template-columns: 22px 1fr;
+  .app-shell {
+    padding: max(2px, env(safe-area-inset-top)) var(--s-2) var(--s-2);
     gap: 6px;
-    padding: 6px 8px;
   }
 
-  .step-seg .step-label {
+  .topbar {
+    top: env(safe-area-inset-top);
+    padding: 4px var(--s-2);
+    border-radius: var(--r-sm);
+  }
+
+  .topbar-title {
+    font-size: 12px;
+  }
+
+  .topbar-title::before {
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+  }
+
+  .ux-status-card {
+    top: calc(env(safe-area-inset-top) + 38px);
+    padding: 6px var(--s-2);
+    border-radius: var(--r-sm);
+  }
+
+  .progress-left {
+    gap: 6px;
+  }
+
+  .progress-left strong {
     font-size: 11px;
   }
 
+  .progress-back-btn {
+    height: 24px;
+    padding: 0 8px;
+    font-size: 10px;
+  }
+
+  #progressHint {
+    display: none;
+  }
+
+  .section-body {
+    padding: var(--s-2);
+    gap: var(--s-2);
+  }
+
+  .chips {
+    max-height: 32px;
+  }
+
+  .chips .empty-state {
+    padding: 4px 6px;
+  }
+
+  .step-seg {
+    grid-template-columns: 18px 1fr;
+    gap: 4px;
+    padding: 4px 6px;
+  }
+
+  .step-seg .step-label {
+    font-size: 10px;
+  }
+
   .step-seg .step-num {
-    width: 20px;
-    height: 20px;
-    font-size: 10.5px;
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
   }
 
   .compact-sticky-controls {
