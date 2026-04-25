@@ -14,7 +14,8 @@ const state = {
   openSection: 'clients',
 };
 
-const RESULT_LIMIT = window.innerWidth <= 720 ? 28 : 90;
+const CLIENT_RESULT_LIMIT = 8;
+const PRODUCT_RESULT_LIMIT = window.innerWidth <= 720 ? 28 : 90;
 
 const DATASET_CONFIG = {
   clients: {
@@ -94,7 +95,7 @@ function bindEvents() {
   });
 
   dom.selectVisibleClientsBtn.addEventListener('click', () => {
-    const visible = getFilteredClients().slice(0, RESULT_LIMIT);
+    const visible = getFilteredClients().slice(0, CLIENT_RESULT_LIMIT);
     visible.forEach(client => state.selectedClients.set(client._key, client));
     renderClients();
     renderSelectedClients();
@@ -111,7 +112,7 @@ function bindEvents() {
   });
 
   dom.addVisibleProductsBtn.addEventListener('click', () => {
-    const visible = getFilteredProducts().slice(0, RESULT_LIMIT);
+    const visible = getFilteredProducts().slice(0, PRODUCT_RESULT_LIMIT);
     let added = 0;
     visible.forEach(item => {
       if (!state.workspaceItems.has(item._key)) {
@@ -354,9 +355,11 @@ function syncDateInputs() {
 
 function getFilteredClients() {
   const query = normalizeText(dom.clientSearch.value);
-  const filtered = !query
-    ? state.clients
-    : state.clients.filter(item => item.searchText.includes(query));
+  const filtered = state.clients.filter(item => {
+    if (state.selectedClients.has(item._key)) return false;
+    if (!query) return true;
+    return item.searchText.includes(query);
+  });
 
   state.filteredClients = filtered;
   return filtered;
@@ -374,10 +377,10 @@ function toggleClient(itemKey, checked) {
 
 function renderClients() {
   const filtered = getFilteredClients();
-  const visible = filtered.slice(0, RESULT_LIMIT);
+  const visible = filtered.slice(0, CLIENT_RESULT_LIMIT);
   dom.clientList.innerHTML = '';
-  dom.clientResultsInfo.textContent = filtered.length > RESULT_LIMIT
-    ? `${formatNumber(filtered.length)} wyników, pokazano ${formatNumber(RESULT_LIMIT)}`
+  dom.clientResultsInfo.textContent = filtered.length > CLIENT_RESULT_LIMIT
+    ? `${formatNumber(filtered.length)} wyników, pokazano ${formatNumber(CLIENT_RESULT_LIMIT)}`
     : `${formatNumber(filtered.length)} wyników`;
 
   if (!filtered.length) {
@@ -410,7 +413,7 @@ function renderClients() {
     dom.clientList.appendChild(row);
   });
 
-  if (filtered.length > RESULT_LIMIT) {
+  if (filtered.length > CLIENT_RESULT_LIMIT) {
     const note = document.createElement('div');
     note.className = 'empty-state';
     note.textContent = 'Pokazano część wyników. Zawęź frazę, żeby szybciej wybrać kontrahenta.';
@@ -466,10 +469,10 @@ function getFilteredProducts() {
 
 function renderProducts() {
   const filtered = getFilteredProducts();
-  const visible = filtered.slice(0, RESULT_LIMIT);
+  const visible = filtered.slice(0, PRODUCT_RESULT_LIMIT);
   dom.productList.innerHTML = '';
-  dom.productResultsInfo.textContent = filtered.length > RESULT_LIMIT
-    ? `${formatNumber(filtered.length)} wyników, pokazano ${formatNumber(RESULT_LIMIT)}`
+  dom.productResultsInfo.textContent = filtered.length > PRODUCT_RESULT_LIMIT
+    ? `${formatNumber(filtered.length)} wyników, pokazano ${formatNumber(PRODUCT_RESULT_LIMIT)}`
     : `${formatNumber(filtered.length)} wyników`;
 
   if (!filtered.length) {
@@ -499,7 +502,7 @@ function renderProducts() {
     dom.productList.appendChild(row);
   });
 
-  if (filtered.length > RESULT_LIMIT) {
+  if (filtered.length > PRODUCT_RESULT_LIMIT) {
     const note = document.createElement('div');
     note.className = 'empty-state';
     note.textContent = 'Pokazano część wyników. Dopisz więcej liter, żeby szybciej trafić w indeks.';
