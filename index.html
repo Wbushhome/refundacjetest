@@ -26,7 +26,10 @@
     <main class="wizard">
       <section class="ux-status-card" aria-live="polite">
         <div class="ux-status-top">
-          <strong id="progressHeadline">Krok 1 z 3: wybierz kontrahentów</strong>
+          <div class="progress-left">
+            <button id="progressBackBtn" class="ghost-btn small-btn progress-back-btn" type="button" aria-label="Wróć do poprzedniego kroku">← Wstecz</button>
+            <strong id="progressHeadline">Krok 1 z 3: wybierz kontrahentów</strong>
+          </div>
           <span id="progressPercent" class="badge">0%</span>
         </div>
         <small id="progressHint" class="muted">Wskazówka: wpisz „/”, aby szybko przejść do wyszukiwarki aktywnego kroku.</small>
