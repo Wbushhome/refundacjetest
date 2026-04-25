@@ -29,6 +29,9 @@ const DATASET_CONFIG = {
 };
 
 const dom = {
+  progressHeadline: document.getElementById('progressHeadline'),
+  progressPercent: document.getElementById('progressPercent'),
+  progressHint: document.getElementById('progressHint'),
   clientSearch: document.getElementById('clientSearch'),
   clientList: document.getElementById('clientList'),
   clientResultsInfo: document.getElementById('clientResultsInfo'),
@@ -52,6 +55,7 @@ const dom = {
   exportRowsBadge: document.getElementById('exportRowsBadge'),
   exportSectionInfo: document.getElementById('exportSectionInfo'),
   exportBtn: document.getElementById('stickyExportBtn'),
+  exportReadinessHint: document.getElementById('exportReadinessHint'),
   stickyRowsCount: document.getElementById('stickyRowsCount'),
   stickySelectedCount: document.getElementById('stickySelectedCount'),
   clearWorkspaceBtn: document.getElementById('clearWorkspaceBtn'),
@@ -81,6 +85,7 @@ async function init() {
 }
 
 function bindEvents() {
+  document.addEventListener('keydown', handleGlobalShortcuts);
   dom.clientSearch.addEventListener('input', renderClients);
   dom.productSearch.addEventListener('input', renderProducts);
 
@@ -100,6 +105,7 @@ function bindEvents() {
     renderClients();
     renderSelectedClients();
     updateExportSummary();
+    if (state.selectedClients.size) openSection('products');
     showToast(`Zaznaczono ${visible.length} widocznych kontrahentów.`);
   });
 
@@ -124,6 +130,7 @@ function bindEvents() {
     renderProducts();
     renderWorkspace();
     updateExportSummary();
+    if (added) openSection('workspace');
     showToast(added ? `Dodano ${added} widocznych indeksów.` : 'Brak nowych indeksów do dodania.');
   });
 
@@ -754,6 +761,8 @@ function updateExportSummary() {
   dom.stickyRowsCount.textContent = formatNumber(rows.length);
   dom.stickySelectedCount.textContent = formatNumber(state.selectedWorkspaceKeys.size);
   dom.exportSectionInfo.textContent = `${formatNumber(rows.length)} wierszy gotowych do eksportu`;
+  updateProgressStatus(rows.length);
+  updateExportState();
 }
 
 function validateBeforeExport() {
@@ -870,6 +879,7 @@ async function parseWorkbookBuffer(buffer) {
 function openSection(section) {
   state.openSection = section;
   updateAccordionState();
+  updateProgressStatus(buildExportRows().length);
 }
 
 function updateAccordionState() {
@@ -930,4 +940,74 @@ function showToast(message) {
   dom.toast.classList.add('show');
   window.clearTimeout(toastTimer);
   toastTimer = window.setTimeout(() => dom.toast.classList.remove('show'), 2600);
+}
+
+function updateProgressStatus(exportRowsCount = 0) {
+  const hasClients = state.selectedClients.size > 0;
+  const hasProducts = state.workspaceItems.size > 0;
+  const hasDates = Boolean(state.globalDates.from && state.globalDates.to && state.globalDates.from <= state.globalDates.to);
+  const hasRefunds = !hasProducts || [...state.workspaceItems.values()].every(item => hasRefundValue(item));
+
+  let doneSteps = 0;
+  if (hasClients) doneSteps += 1;
+  if (hasProducts) doneSteps += 1;
+  if (hasDates && hasRefunds && exportRowsCount > 0) doneSteps += 1;
+
+  const percent = Math.round((doneSteps / 3) * 100);
+  dom.progressPercent.textContent = `${percent}%`;
+
+  if (!hasClients) {
+    dom.progressHeadline.textContent = 'Krok 1 z 3: wybierz kontrahentów';
+    dom.progressHint.textContent = 'Wybierz minimum 1 kontrahenta, aby przejść dalej.';
+    return;
+  }
+  if (!hasProducts) {
+    dom.progressHeadline.textContent = 'Krok 2 z 3: dodaj indeksy do refundacji';
+    dom.progressHint.textContent = 'Wyszukaj indeks i dodaj go przyciskiem „Dodaj” lub „Dodaj widoczne”.';
+    return;
+  }
+  if (!hasDates || !hasRefunds || !exportRowsCount) {
+    dom.progressHeadline.textContent = 'Krok 3 z 3: uzupełnij daty i refundacje';
+    dom.progressHint.textContent = 'Podaj zakres dat i refundację dla każdego indeksu, aby odblokować eksport.';
+    return;
+  }
+  dom.progressHeadline.textContent = 'Gotowe do eksportu';
+  dom.progressHint.textContent = 'Wszystkie kroki zakończone. Możesz wyeksportować plik skrótem Ctrl/Cmd + Enter.';
+}
+
+function updateExportState() {
+  const validationMessage = validateBeforeExport();
+  const isReady = !validationMessage;
+  dom.exportBtn.disabled = !isReady;
+  dom.exportReadinessHint.textContent = isReady ? 'Gotowe: możesz wyeksportować dane.' : validationMessage;
+}
+
+function handleGlobalShortcuts(event) {
+  if (event.defaultPrevented) return;
+  const target = event.target;
+  const isTypingContext = target instanceof HTMLElement && (
+    target.tagName === 'INPUT' ||
+    target.tagName === 'TEXTAREA' ||
+    target.isContentEditable
+  );
+
+  if (event.key === '/' && !isTypingContext) {
+    event.preventDefault();
+    const inputBySection = {
+      clients: dom.clientSearch,
+      products: dom.productSearch,
+      workspace: dom.bulkRefundValue,
+    };
+    inputBySection[state.openSection]?.focus();
+    return;
+  }
+
+  const isSubmitShortcut = (event.ctrlKey || event.metaKey) && event.key === 'Enter';
+  if (!isSubmitShortcut) return;
+  event.preventDefault();
+  if (dom.exportBtn.disabled) {
+    showToast(validateBeforeExport() || 'Eksport jest jeszcze niedostępny.');
+    return;
+  }
+  exportData();
 }

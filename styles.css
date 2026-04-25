@@ -95,6 +95,37 @@ input, select { -webkit-appearance: none; appearance: none; }
 .wizard { display: grid; gap: 8px; }
 .section-card { overflow: hidden; }
 
+.ux-status-card {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 9px 11px;
+  display: grid;
+  gap: 4px;
+}
+
+.ux-status-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.export-hint {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+  min-height: 16px;
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled,
+.ghost-btn:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .section-toggle {
   width: 100%;
   border: 0;
