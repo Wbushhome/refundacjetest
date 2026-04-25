@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eef2f7">
+  <meta name="description" content="Generator refundacji dla kontrahentów i indeksów">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <title>Generator refundacji</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-title">Refundacje</div>
+      <div class="topbar-actions">
+        <button id="installBtn" class="secondary-btn micro-btn hidden" type="button">Zainstaluj</button>
+        <button id="reloadBtn" class="ghost-btn micro-btn" type="button">Odśwież</button>
+      </div>
+    </header>
+
+    <main class="wizard">
+      <section class="panel section-card" data-section="clients">
+        <button class="section-toggle" type="button" data-open="clients">
+          <span>
+            <strong>1. Kontrahenci</strong>
+            <small id="clientSectionInfo" class="muted">Szukaj po numerze, logo lub nazwie</small>
+          </span>
+          <span id="clientCountBadge" class="badge">0</span>
+        </button>
+        <div class="section-body" id="clientsBody">
+          <div class="toolbar compact-toolbar">
+            <input id="clientSearch" class="search-input" type="search" placeholder="Wpisz fragment numeru, logo lub nazwy">
+            <div class="button-row two-actions compact-actions">
+              <button id="selectVisibleClientsBtn" class="secondary-btn small-btn" type="button">Zaznacz widoczne</button>
+              <button id="clearClientsBtn" class="ghost-btn small-btn" type="button">Wyczyść</button>
+            </div>
+          </div>
+
+          <div class="subheader-row">
+            <span id="clientResultsInfo" class="muted">0 wyników</span>
+            <button id="goProductsBtn" class="link-btn bordered-link small-btn" type="button">Dalej</button>
+          </div>
+
+          <div id="selectedClientsChips" class="chips"></div>
+          <div id="clientList" class="result-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="panel section-card" data-section="products">
+        <button class="section-toggle" type="button" data-open="products">
+          <span>
+            <strong>2. Indeksy do założenia cen i refundacji</strong>
+            <small id="productSectionInfo" class="muted">Szukaj po fragmencie: producent, nazwa, ID towaru, kod kreskowy</small>
+          </span>
+          <span id="workspaceCountBadge" class="badge">0</span>
+        </button>
+        <div class="section-body" id="productsBody">
+          <div class="toolbar compact-toolbar">
+            <input id="productSearch" class="search-input" type="search" placeholder="Szukaj: producent, nazwa, ID towaru, kod kreskowy (kolejność dowolna)">
+            <div class="button-row two-actions compact-actions">
+              <button id="addVisibleProductsBtn" class="secondary-btn small-btn" type="button">Dodaj widoczne</button>
+              <button id="goWorkspaceBtn" class="link-btn bordered-link small-btn" type="button">Refundacje</button>
+            </div>
+          </div>
+
+          <div class="subheader-row sticky-mini-subheader">
+            <span id="productResultsInfo" class="muted">0 wyników</span>
+            <span id="workspaceHelperText" class="muted">Dodane: 0</span>
+          </div>
+
+          <div id="productList" class="result-list product-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="panel section-card" data-section="workspace">
+        <button class="section-toggle" type="button" data-open="workspace">
+          <span>
+            <strong>3. Ceny i Refundacje</strong>
+            <small id="exportSectionInfo" class="muted">Zakres dat, cena AC i refundacja</small>
+          </span>
+          <span id="exportRowsBadge" class="badge badge-accent">0</span>
+        </button>
+        <div class="section-body" id="workspaceBody">
+          <div class="compact-card range-card compact-range-card">
+            <div class="card-title-row">
+              <strong>Zakres refundacji</strong>
+              <small class="muted">wspólny dla eksportu</small>
+            </div>
+            <div class="field-grid two-col dates-grid">
+              <label class="field-card">
+                <span>Od</span>
+                <input id="refundDateFrom" class="search-input compact-input" type="date">
+              </label>
+              <label class="field-card">
+                <span>Do</span>
+                <input id="refundDateTo" class="search-input compact-input" type="date">
+              </label>
+            </div>
+          </div>
+
+          <div class="workspace-toolbar compact-workspace-toolbar">
+            <span id="bulkSelectionInfo" class="muted">0 zaznaczonych indeksów</span>
+            <div class="button-row slim-actions compact-actions">
+              <button id="selectAllWorkspaceBtn" class="secondary-btn small-btn" type="button">Zaznacz wszystkie</button>
+              <button id="clearWorkspaceSelectionBtn" class="ghost-btn small-btn" type="button">Odznacz</button>
+              <button id="clearWorkspaceBtn" class="ghost-btn small-btn" type="button">Wyczyść listę</button>
+            </div>
+          </div>
+
+          <div id="workspaceCards" class="workspace-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="sticky-action-bar mac-sticky-bar compact-sticky-bar">
+      <div class="sticky-topline compact-topline">
+        <div class="sticky-stat-pill">
+          <strong id="stickyRowsCount">0</strong>
+          <span>wierszy</span>
+        </div>
+        <div class="sticky-stat-pill secondary">
+          <strong id="stickySelectedCount">0</strong>
+          <span>zazn.</span>
+        </div>
+      </div>
+      <div class="sticky-controls compact-sticky-controls">
+        <input id="bulkAcPrice" class="search-input sticky-input compact-input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Cena AC">
+        <input id="bulkRefundValue" class="search-input sticky-input compact-input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Refundacja">
+        <button id="applyBulkRefundBtn" class="secondary-btn small-btn sticky-btn compact-btn" type="button">Zastosuj</button>
+        <button id="stickyExportBtn" class="primary-btn small-btn sticky-btn compact-btn" type="button">Eksport</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>
